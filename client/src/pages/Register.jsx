@@ -1,90 +1,70 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
-import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import "./Auth.css";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const { login } = useContext(AuthContext);
-
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-
-    if (!name || !email || !password) {
-      return toast.error("All fields are required");
-    }
-
     try {
-      setLoading(true);
-      const res = await API.post("/auth/register", {
-        name,
-        email,
-        password,
-      });
-      login(res.data);
-      toast.success("Account created successfully");
-    } catch (err) {
-      toast.error("User already exists");
-    } finally {
-      setLoading(false);
+      await API.post("/auth/register", { name, email, password });
+      toast.success("Account created");
+      navigate("/login");
+    } catch {
+      toast.error("Registration failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow w-full max-w-sm"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h2>Create Account ✨</h2>
+        <p>Start managing your tasks today</p>
 
-        <input
-          type="text"
-          placeholder="Name"
-          className="w-full border rounded p-2 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <form onSubmit={handleRegister}>
+          <div className="auth-group">
+            <label>Name</label>
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full border rounded p-2 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          <div className="auth-group">
+            <label>Email</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <div className="auth-group">
+            <label>Password</label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        <button
-          disabled={loading}
-          className={`w-full py-2 rounded text-white transition ${
-            loading
-              ? "bg-gray-400"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
-        >
-          {loading ? "Creating account..." : "Register"}
-        </button>
+          <button className="auth-btn">Register</button>
+        </form>
 
-        <p className="text-sm mt-4 text-center">
-          Already have an account?{" "}
-          <Link className="text-blue-600 hover:underline" to="/login">
-            Login
-          </Link>
-        </p>
-      </form>
+        <div className="auth-footer">
+          Already have an account? <Link to="/login">Login</Link>
+        </div>
+      </div>
     </div>
   );
 }
