@@ -18,6 +18,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
+  const [dueDate, setDueDate] = useState("");
 
 
   const fetchTasks = async () => {
@@ -39,11 +40,12 @@ export default function Dashboard() {
     e.preventDefault();
     if (!title) return toast.error("Title required");
 
-    await API.post("/tasks", { title, description, priority, status });
+    await API.post("/tasks", { title, description, priority, status, dueDate });
     toast.success("Task added");
     setTitle("");
     setDescription("");
-    fetchTasks();
+    setDueDate("");
+    fetchTasks(); 
     fetchStats();
   };
 
@@ -92,6 +94,14 @@ export default function Dashboard() {
                   onChange={e => setDescription(e.target.value)}
                 />
               </div>
+              <div className="form-group">
+  <label>Due Date</label>
+  <input
+    type="date"
+    value={dueDate}
+    onChange={(e) => setDueDate(e.target.value)}
+  />
+</div>
 
               <div className="form-row">
                 <div className="form-group">
@@ -184,6 +194,12 @@ export default function Dashboard() {
               <p><b>Description:</b> {task.description || "-"}</p>
               <p><b>Priority:</b> {task.priority}</p>
               <p><b>Status:</b> {task.status}</p>
+              <p>
+  <b>Due Date:</b>{" "}
+  {task.dueDate
+    ? new Date(task.dueDate).toLocaleDateString()
+    : "Not set"}
+</p>
 
               <div className="task-actions">
                 <select

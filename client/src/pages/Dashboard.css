@@ -184,4 +184,8 @@
   flex: 1;
   min-width: 200px;
 }
+.task.overdue {
+  border-color: #dc2626 !important;
+  background: #fee2e2 !important;
+}
 
