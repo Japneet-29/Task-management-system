@@ -16,7 +16,7 @@ Authentication: JWT (JSON Web Tokens)
 
 ## Setup Instructions
 
-###Backend
+### Backend
 
 Clone the repository
 
@@ -28,7 +28,7 @@ Setup environment variables
 
 Start the server
 
-###Frontend
+### Frontend
 
 Navigate to the frontend directory
 
